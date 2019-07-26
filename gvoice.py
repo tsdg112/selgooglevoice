@@ -17,6 +17,8 @@ driver = webdriver.Chrome('\\hpk\\cd\\chromedriver.exe', chrome_options=options)
 
 driver.get('https://accounts.google.com/ServiceLogin?continue=https://www.google.com/voice&rip=1&nojavascript=1&followup=https://www.google.com/voice')
 
+input_0 = False
+
 for _ in range(30):
 	time.sleep(0.5)
 	doc=driver.page_source.encode('ascii', 'replace').decode('ascii')
@@ -40,13 +42,26 @@ for _ in range(30):
 		driver.execute_script("arguments[0].click();", element)
 		break
 
+	p = re.search('id="input_0"', doc)
+	if p:
+		print("INPUT_0")
+		input_0 = True;
+		break
+
+
 
 # enter called TN
-time.sleep(1)
-actions = ActionChains(driver) 
-actions.send_keys(sys.argv[3])
-actions.send_keys(Keys.ENTER)
-actions.perform()
+if input_0:
+	driver.find_element_by_id('input_0').send_keys(sys.argv[3])
+	actions = ActionChains(driver) 
+	actions.send_keys(Keys.ENTER)
+	actions.perform()
+else:
+	time.sleep(1)
+	actions = ActionChains(driver) 
+	actions.send_keys(sys.argv[3])
+	actions.send_keys(Keys.ENTER)
+	actions.perform()
 
 
 id='FAIL'
@@ -68,14 +83,8 @@ time.sleep(0.3)
 element = driver.find_element_by_xpath('//button[normalize-space()="Connect"]')
 driver.execute_script("arguments[0].click();", element)
 
-time.sleep(3)
+time.sleep(5)
 print("END")
-driver.get('https://accounts.google.com/SignOutOptions?hl=en&amp;continue=https://voice.google.com/u/0&amp;service=grandcentral')
-time.sleep(0.3)
-element = driver.find_element_by_id("signout")
-driver.execute_script("arguments[0].click();", element)
-
-time.sleep(1)
 
 driver.close()
 driver.quit()
