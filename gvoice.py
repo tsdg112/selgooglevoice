@@ -12,27 +12,25 @@ options = webdriver.ChromeOptions()
 options.add_argument('--no-sandbox') # Bypass OS security model
 options.add_argument('--disable-gpu')
 options.add_argument("user-data-dir=/hpk/cd/selenium") 
-# options.add_experimental_option('excludeSwitches', ['enable-logging'])
 options.add_argument("--log-level=3")  # fatal
-driver = webdriver.Chrome('\\hpk\\cd\\chromedriver.exe', chrome_options=options)
+driver = webdriver.Chrome('\\hpk\\cd\\chromedriver.exe', options=options)
 
-driver.implicitly_wait(10)
+driver.implicitly_wait(1)
 
 driver.get('https://accounts.google.com/ServiceLogin?continue=https://www.google.com/voice&rip=1&nojavascript=1&followup=https://www.google.com/voice')
-
-# time.sleep(10)
-# doc=driver.page_source.encode('ascii', 'replace').decode('ascii')
-# print(doc)
-# time.sleep(300)
 input_0 = False
 
 for _ in range(30):
 	time.sleep(0.5)
-	doc=driver.page_source.encode('ascii', 'replace').decode('ascii')
+	try:
+		driver.find_element_by_id('il1')
+		break
+	except:
+		pass
 
+	doc=driver.page_source.encode('ascii', 'replace').decode('ascii')
 	p = re.search('Sign in to continue to Google Voice|Sign in with your Google Account', doc)
 	if p:
-		print("LOGIN")
 		driver.find_element_by_id('Email').send_keys(sys.argv[1])
 		driver.find_element_by_id('next').click()
 		time.sleep(1)
@@ -43,24 +41,13 @@ for _ in range(30):
 		actions.send_keys(sys.argv[2])
 		actions.send_keys(Keys.ENTER)
 		actions.perform()
-		time.sleep(1)
+		time.sleep(2)
 
-##		element = driver.find_element_by_xpath("//*[contains(text(), 'Next')]")
-##		driver.execute_script("arguments[0].click();", element)
-##		actions = ActionChains(driver) 
-##		actions.move_to_element_with_offset(element, 1, 1)
-##		actions.click()
-##		actions.perform()
-
-		# driver.get('https://voice.google.com/calls')
-
-		time.sleep(1)
 		doc = driver.page_source.encode('ascii', 'replace').decode('ascii')
 
 	p = re.search('Make a call.*? class="([^ ]*)', doc)
 	if p:
 		print("MAKE A CALL", p.group(1))
-		# element = driver.find_elements_by_class_name('md-body-1')[1]
 		time.sleep(1)
 		element = driver.find_element_by_class_name(p.group(1))
 		driver.execute_script("arguments[0].click();", element)
@@ -73,58 +60,37 @@ for _ in range(30):
 		break
 
 
-
-id='FAIL'
-for _ in range(20):
-	# enter called TN
-	try:
-		if input_0:
-			time.sleep(1)
-			driver.find_element_by_id('input_0').send_keys(sys.argv[3])
-			actions = ActionChains(driver) 
-			actions.send_keys(Keys.ENTER)
-			actions.perform()
-		else:
-			time.sleep(1)
-			actions = ActionChains(driver) 
-			actions.send_keys(sys.argv[3])
-			actions.send_keys(Keys.ENTER)
-			actions.perform()
-	except:
-		pass
+driver.implicitly_wait(10)
+try:
+	driver.find_element_by_id('il1').send_keys(sys.argv[3])
+except:
+	print("GATE1")
+	print(driver.page_source.encode('ascii', 'replace').decode('ascii'))
+	driver.close()
+	driver.quit()
+	sys.exit()
 	
-	try:
-		element = driver.find_element_by_xpath('//*[@test-id="new-call-button"]')
-		driver.execute_script("arguments[0].click();", element)
-	except:
-		pass
-
-	time.sleep(0.3)
-	doc = driver.page_source.encode('ascii', 'replace').decode('ascii')
-	p = re.search('id="(select_option_\d+)"', driver.page_source)
-	if p:
-		id = p.group(1)
-		print("ID:",id)
-		break
-	else:
-		print("WAITING FOR CALLING TN")
-		print(driver.page_source.encode('ascii', 'replace').decode('ascii'), file=sys.stderr)
-
-element = driver.find_element_by_id(id)
+driver.implicitly_wait(10)
+driver.find_element_by_xpath('//*[@gv-test-id="new-call-button"]').click()
+element = driver.find_element_by_xpath('//*[@role="listbox"]')
+driver.execute_script("arguments[0].click();", element)
+element = driver.find_element_by_xpath('//*[@role="option"]')
+driver.execute_script("arguments[0].click();", element)
+actions = ActionChains(driver) 
+actions.move_to_element_with_offset(element, 6, 6)
+actions.click()
+actions.perform()
+element = driver.find_element_by_xpath("//*[contains(text(), 'Connect')]")
 driver.execute_script("arguments[0].click();", element)
 
 time.sleep(0.3)
-element = driver.find_element_by_xpath('//button[normalize-space()="Connect"]')
-driver.execute_script("arguments[0].click();", element)
+try:
+	element = driver.find_element_by_xpath('//button[normalize-space()="Connect"]')
+	driver.execute_script("arguments[0].click();", element)
+except:
+	pass
 
 time.sleep(5)
-print("END")
-#LOGOUT driver.get('https://accounts.google.com/SignOutOptions?hl=en&amp;continue=https://voice.google.com/u/0&amp;service=grandcentral')
-#LOGOUT time.sleep(0.3)
-#LOGOUT element = driver.find_element_by_id("signout")
-#LOGOUT driver.execute_script("arguments[0].click();", element)
-
-#LOGOUT time.sleep(1)
 
 driver.close()
 driver.quit()
