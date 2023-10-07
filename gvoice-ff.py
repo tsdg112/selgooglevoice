@@ -8,7 +8,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.common.exceptions import NoSuchElementException
 
 options = Options()
-options.add_argument("-headless")
+# options.add_argument("-headless")
 driver = webdriver.Firefox(options=options, executable_path=r'C:\hpk\cd\geckodriver.exe')
 driver.set_window_size(1024, 768)
 
@@ -32,7 +32,8 @@ for _ in range(30):
 		driver.find_element('id', 'next').click()
 		time.sleep(1)
 
-		element = driver.find_element('xpath', "//*[contains(text(), 'Enter your password')]")
+		# element = driver.find_element('xpath', "//*[contains(text(), 'Enter your password')]")
+		element = driver.find_element_by_xpath('//input[@aria-label="Enter your password"]')
 		actions = ActionChains(driver) 
 		actions.move_to_element_with_offset(element, 1, 1)
 		actions.send_keys(sys.argv[2])
