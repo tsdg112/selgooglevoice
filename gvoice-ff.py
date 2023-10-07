@@ -32,6 +32,8 @@ for _ in range(30):
 		driver.find_element('id', 'next').click()
 		time.sleep(1)
 
+		doc=driver.page_source.encode('ascii', 'replace').decode('ascii')
+		print(doc)
 		# element = driver.find_element('xpath', "//*[contains(text(), 'Enter your password')]")
 		element = driver.find_element_by_xpath('//input[@aria-label="Enter your password"]')
 		actions = ActionChains(driver) 
