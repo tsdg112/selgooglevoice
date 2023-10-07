@@ -13,4 +13,4 @@ It will call from the linked number in your Google Voice account.  It has only b
 
 You will need to change lines 14 and 15 to indicate a directory to store cookies, and the path for your chromedriver.
 
-If you prefer to use geckodriver (Firefox), use gvoice-ff.  You will need to specify the path for geckodriver in line 12.
+If you prefer to use geckodriver (Firefox), use gvoice-ff.  Place geckodriver (or the Windows geckodriver.exe) in the same directory as gvoice-ff, or in your PATH.

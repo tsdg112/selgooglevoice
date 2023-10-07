@@ -9,7 +9,8 @@ from selenium.common.exceptions import NoSuchElementException
 
 options = Options()
 options.add_argument("-headless")
-driver = webdriver.Firefox(options=options, executable_path=r'C:\hpk\cd\geckodriver.exe')
+driver = webdriver.Firefox(options=options)
+# driver = webdriver.Firefox(options=options, executable_path=r'C:\hpk\cd\geckodriver.exe')
 driver.set_window_size(1024, 768)
 
 driver.implicitly_wait(1)
