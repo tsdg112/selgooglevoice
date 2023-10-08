@@ -32,10 +32,12 @@ for _ in range(30):
 		driver.find_element('id', 'next').click()
 		time.sleep(1)
 
-		doc=driver.page_source.encode('ascii', 'replace').decode('ascii')
-		print(doc)
 		# element = driver.find_element('xpath', "//*[contains(text(), 'Enter your password')]")
-		element = driver.find_element_by_xpath('//input[@aria-label="Enter your password"]')
+		try:
+			element = driver.find_element_by_xpath('//input[@aria-label="Enter your password"]')
+		except:
+			doc=driver.page_source.encode('ascii', 'replace').decode('ascii')
+			print(doc)
 		actions = ActionChains(driver) 
 		actions.move_to_element_with_offset(element, 1, 1)
 		actions.send_keys(sys.argv[2])
